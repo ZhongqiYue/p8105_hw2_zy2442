@@ -87,3 +87,12 @@ Choose some columns and not others.
 select(NYC_transit_df, line, station_name, station_latitude, station_longitude, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, entry, vending, entrance_type, ada, ada_notes)
 ```
 
+Now convert the entry variable from character to a logical variable.
+
+```{r}
+NYC_transit_df = 
+  read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
+  janitor::clean_names() %>% 
+  select(line, station_name, station_latitude, station_longitude, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, entry, vending, entrance_type, ada, ada_notes) %>% 
+  mutate(entry = recode(entry, "YES"="TRUE", "NO"="FALSE"), entry = as.logical(entry))
+```
