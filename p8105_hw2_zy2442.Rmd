@@ -80,3 +80,10 @@ Read and clean the NYC Transit dataset.
 NYC_transit_df = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
 NYC_transit_df = janitor::clean_names(NYC_transit_df)
 ```
+
+Choose some columns and not others.
+
+```{r}
+select(NYC_transit_df, line, station_name, station_latitude, station_longitude, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, entry, vending, entrance_type, ada, ada_notes)
+```
+
