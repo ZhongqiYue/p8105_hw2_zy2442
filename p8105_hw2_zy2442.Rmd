@@ -108,3 +108,24 @@ count(filter(NYC_transit_df, vending == "NO"))/sum(count(filter(NYC_transit_df, 
 * There are 465 distinct stations.
 * 468 stations are ADA compliant.
 * The proportion of station entrances / exits without vending allow entrance is 0.0980 or 9.80%.
+
+# Problem 3
+
+Read and clean the pols-month dataset.
+
+```{r}
+pols_month_df = 
+  read_csv("./fivethirtyeight_datasets/pols-month.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(mon, c("year","month", "day")) %>% 
+  mutate(
+    year = as.integer(year),
+    month = as.integer(month),
+    day = as.integer(day)
+  ) %>% 
+  mutate(month = month.name[month]) %>% 
+  mutate(president = prez_gop + prez_dem) %>% 
+  select(-prez_gop, -prez_dem) %>% 
+  select(-day)
+```
+
