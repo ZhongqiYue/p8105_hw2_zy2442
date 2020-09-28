@@ -84,7 +84,7 @@ NYC_transit_df = janitor::clean_names(NYC_transit_df)
 Choose some columns and not others.
 
 ```{r}
-select(NYC_transit_df, line, station_name, station_latitude, station_longitude, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, entry, vending, entrance_type, ada, ada_notes)
+select(NYC_transit_df, line, station_name, station_latitude, station_longitude, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, entry, vending, entrance_type, ada)
 ```
 
 Now convert the entry variable from character to a logical variable.
@@ -93,8 +93,18 @@ Now convert the entry variable from character to a logical variable.
 NYC_transit_df = 
   read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
   janitor::clean_names() %>% 
-  select(line, station_name, station_latitude, station_longitude, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, entry, vending, entrance_type, ada, ada_notes) %>% 
+  select(line, station_name, station_latitude, station_longitude, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, entry, vending, entrance_type, ada) %>% 
   mutate(entry = recode(entry, "YES"="TRUE", "NO"="FALSE"), entry = as.logical(entry))
 ```
 
-The original data set contains 32 variables, which include character, double and logical variables. First, I clean the name of each variable to make them all in lower case. Then I only retain the line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance, which are the variables the question interested in. After this step, there are only 20 variables left. Next, I convert the "entry" from character variable to logical variable by using "recode" function. The resulting data set has `r nrow(NYC_transit_df)` rows and `r ncol(NYC_transit_df)` columns. 
+The original data set contains 32 variables, which include character, double and logical variables. First, I clean the name of each variable to make them all in lower case. Then I only retain the line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance, which are the variables the question interested in. After this step, there are only 19 variables left. Next, I convert the "entry" from character variable to logical variable by using "recode" function. The resulting data set has `r nrow(NYC_transit_df)` rows and `r ncol(NYC_transit_df)` columns. These data are tidy now such that columns are variable names all in lower case and single columns contain single variables.
+
+```{r}
+nrow(distinct(NYC_transit_df, line, station_name, .keep_all = TRUE))
+count(filter(NYC_transit_df,ada == "TRUE"))
+count(filter(NYC_transit_df, vending == "NO"))/sum(count(filter(NYC_transit_df, entry == "TRUE"))+count(filter(NYC_transit_df, entry == "FALSE")))
+```
+
+* There are 465 distinct stations.
+* 468 stations are ADA compliant.
+* The proportion of station entrances / exits without vending allow entrance is 0.0980 or 9.80%.
