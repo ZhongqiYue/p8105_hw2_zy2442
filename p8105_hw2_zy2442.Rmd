@@ -96,3 +96,5 @@ NYC_transit_df =
   select(line, station_name, station_latitude, station_longitude, route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, entry, vending, entrance_type, ada, ada_notes) %>% 
   mutate(entry = recode(entry, "YES"="TRUE", "NO"="FALSE"), entry = as.logical(entry))
 ```
+
+The original data set contains 32 variables, which include character, double and logical variables. First, I clean the name of each variable to make them all in lower case. Then I only retain the line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance, which are the variables the question interested in. After this step, there are only 20 variables left. Next, I convert the "entry" from character variable to logical variable by using "recode" function. The resulting data set has `r nrow(NYC_transit_df)` rows and `r ncol(NYC_transit_df)` columns. 
