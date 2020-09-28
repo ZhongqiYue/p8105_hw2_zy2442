@@ -124,7 +124,8 @@ pols_month_df =
     day = as.integer(day)
   ) %>% 
   mutate(month = month.name[month]) %>% 
-  mutate(president = prez_gop + prez_dem) %>% 
+  mutate(president =prez_dem, prez_gop)%>% 
+  mutate(president = recode(president,"1" = "dem", "0" = "gop")) %>% 
   select(-prez_gop, -prez_dem) %>% 
   select(-day)
 ```
@@ -142,7 +143,8 @@ snp_df =
     day = as.integer(day)
   ) %>% 
   mutate(month = month.name[month]) %>% 
-  relocate(year, month)
+  relocate(year, month) %>% 
+  select(-day)
 ```
 
 Read and clean the unemployment dataset.
@@ -153,3 +155,24 @@ unemployment_df =
 colnames(unemployment_df)[2:13] = month.name
 ```
 
+Wide format to long format.
+
+```{r}
+unemployment_df_tidy = 
+  unemployment_df %>% 
+  pivot_longer(
+    January : December,
+    names_to = "month",
+    values_to = "unemployment"
+  ) %>% 
+  janitor::clean_names()
+```
+
+Joining three datasets.
+
+```{r}
+pols_snp_df=
+  left_join(pols_month_df, snp_df, by =c("year","month"))
+pols_snp_unemployment_df =
+  left_join(pols_snp_df, unemployment_df_tidy, by =c("year", "month"))
+```
