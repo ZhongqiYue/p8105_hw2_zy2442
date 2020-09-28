@@ -144,3 +144,12 @@ snp_df =
   mutate(month = month.name[month]) %>% 
   relocate(year, month)
 ```
+
+Read and clean the unemployment dataset.
+
+```{r}
+unemployment_df = 
+  read_csv("./fivethirtyeight_datasets/unemployment.csv") 
+colnames(unemployment_df)[2:13] = month.name
+```
+
