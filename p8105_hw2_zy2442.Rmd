@@ -109,6 +109,23 @@ count(filter(NYC_transit_df, vending == "NO"))/sum(count(filter(NYC_transit_df, 
 * 468 stations are ADA compliant.
 * The proportion of station entrances / exits without vending allow entrance is 0.0980 or 9.80%.
 
+Reformat the data.
+
+```{r}
+Reformed_df = 
+  NYC_transit_df %>% 
+  mutate(route8 = as.character(route8)) %>% 
+  mutate(route9 = as.character(route9)) %>% 
+  mutate(route10 = as.character(route10)) %>% 
+  mutate(route11 = as.character(route11))
+
+nrow(distinct(NYC_transit_df, station_name, route1 = "A", route2 = "A",route3 = "A",route4 = "A",route5 = "A",route6 = "A",route7 = "A",route8 = "A",route9 = "A",route10 = "A",route11 = "A",  .keep_all = TRUE))
+
+nrow(distinct(NYC_transit_df, route1 = "A", route2 = "A",route3 = "A",route4 = "A",route5 = "A",route6 = "A",route7 = "A",route8 = "A",route9 = "A",route10 = "A",route11 = "A", ada = "TRUE", .keep_all = TRUE))
+```
+
+* After reformatting the data set, there are 356 distinct stations serve the A train. Of the stations that serve the A train, only 1 is ADA compliant.
+
 # Problem 3
 
 Read and clean the pols-month dataset.
@@ -176,3 +193,8 @@ pols_snp_df=
 pols_snp_unemployment_df =
   left_join(pols_snp_df, unemployment_df_tidy, by =c("year", "month"))
 ```
+
+* The original pols-month data set contains 9 variables, which are mon, prez_gop, gov_gop,sen_gop, rep_gop, prez_dem, gov_dem, sen_dem, rep_dem.Among these variables, mon is date and the rest are double variables. After cleaning the data set, mon variable is separated into integer variables year, month and day. Then month number is replaced with the month name, which turns it into a character variable. A president variable is created to present prez_dem and prez_gop variables. Then prez_dem, prez_gop and day variables are removed.The final pols-month data set contains 9 varibales, which are year (integer variable), month (character varibale), president (character variable), gov_gop, sen_gop, rep_gop, gov_dem, sen_dem, rep_dem (the rest are all double variables). The final dimension (rows, columns) of this data set is (`r dim(pols_month_df)`). 
+* The original snp data set contains two variables, which are date (character variable) and close (double variable). By applying the same cleaning step, this data set is turned into three variables, which are year (integer variable), month (character variable) and close (double variable). The final dimension (rows, columns) of this data set is (`r dim(snp_df)`). 
+* The original unemployment data set contains 13 variables, which are year, Jan - Dec (all 13 variables are double variables). Then the wide format is turned into the long format so that we have three variables, which are year (double variable), month (character variable) and unemployment (double variable). The final dimension (rows, columns) of this data set is (`r dim(unemployment_df_tidy)`).
+* The dimension (rows, columns) of the final data set is (`r dim(pols_snp_unemployment_df)`). The range of the year is (`r range(pull(pols_snp_unemployment_df, year))`). The names of key variables are "year" and "month".
