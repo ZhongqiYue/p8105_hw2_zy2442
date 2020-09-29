@@ -102,12 +102,12 @@ The original data set contains 32 variables, which include character, double and
 ```{r}
 nrow(distinct(NYC_transit_df, line, station_name, .keep_all = TRUE))
 count(filter(NYC_transit_df,ada == "TRUE"))
-count(filter(NYC_transit_df, vending == "NO"))/sum(count(filter(NYC_transit_df, entry == "TRUE"))+count(filter(NYC_transit_df, entry == "FALSE")))
+count(filter(NYC_transit_df, entry == "TRUE", vending == "NO"))/count(filter(NYC_transit_df, vending == "NO"))
 ```
 
 * There are 465 distinct stations.
 * 468 stations are ADA compliant.
-* The proportion of station entrances / exits without vending allow entrance is 0.0980 or 9.80%.
+* The proportion of station entrances / exits without vending allow entrance is 0.3770492 or 37.70492%.
 
 Reformat the data.
 
