@@ -100,7 +100,7 @@ NYC_transit_df =
 The original data set contains 32 variables, which include character, double and logical variables. First, I clean the name of each variable to make them all in lower case. Then I only retain the line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance, which are the variables the question interested in. After this step, there are only 19 variables left. Next, I convert the "entry" from character variable to logical variable by using "recode" function. The resulting data set has `r nrow(NYC_transit_df)` rows and `r ncol(NYC_transit_df)` columns. These data are tidy now such that columns are variable names all in lower case and single columns contain single variables.
 
 ```{r}
-nrow(distinct(NYC_transit_df, line, station_name, .keep_all = TRUE))
+count(distinct(NYC_transit_df, line, station_name, .keep_all = TRUE))
 count(filter(NYC_transit_df,ada == "TRUE"))
 count(filter(NYC_transit_df, entry == "TRUE", vending == "NO"))/count(filter(NYC_transit_df, vending == "NO"))
 ```
@@ -114,17 +114,27 @@ Reformat the data.
 ```{r}
 Reformed_df = 
   NYC_transit_df %>% 
-  mutate(route8 = as.character(route8)) %>% 
-  mutate(route9 = as.character(route9)) %>% 
-  mutate(route10 = as.character(route10)) %>% 
-  mutate(route11 = as.character(route11))
+  mutate_at(vars(route1:route11), as.character) %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "route_name",
+    names_prefix = "route_name",
+    values_to = "route_number") %>% 
+  drop_na(route_number) 
 
-nrow(distinct(NYC_transit_df, station_name, route1 = "A", route2 = "A",route3 = "A",route4 = "A",route5 = "A",route6 = "A",route7 = "A",route8 = "A",route9 = "A",route10 = "A",route11 = "A",  .keep_all = TRUE))
+Reformed_df%>% 
+  filter(route_number == "A") %>% 
+  distinct(line, station_name) %>% 
+  count()
 
-nrow(distinct(NYC_transit_df, route1 = "A", route2 = "A",route3 = "A",route4 = "A",route5 = "A",route6 = "A",route7 = "A",route8 = "A",route9 = "A",route10 = "A",route11 = "A", ada = "TRUE", .keep_all = TRUE))
+Reformed_df%>% 
+  filter(route_number == "A") %>% 
+  distinct(line, station_name, ada) %>%
+  filter(ada == "TRUE") %>% 
+  count()
 ```
 
-* After reformatting the data set, there are 356 distinct stations serve the A train. Of the stations that serve the A train, only 1 is ADA compliant.
+* After reformatting the data set, there are 60 distinct stations serve the A train. Of the stations that serve the A train, only 17 are ADA compliant.
 
 # Problem 3
 
