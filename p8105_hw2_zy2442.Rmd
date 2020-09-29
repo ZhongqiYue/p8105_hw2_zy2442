@@ -100,14 +100,26 @@ NYC_transit_df =
 The original data set contains 32 variables, which include character, double and logical variables. First, I clean the name of each variable to make them all in lower case. Then I only retain the line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance, which are the variables the question interested in. After this step, there are only 19 variables left. Next, I convert the "entry" from character variable to logical variable by using "recode" function. The resulting data set has `r nrow(NYC_transit_df)` rows and `r ncol(NYC_transit_df)` columns. These data are tidy now such that columns are variable names all in lower case and single columns contain single variables.
 
 ```{r}
-count(distinct(NYC_transit_df, line, station_name, .keep_all = TRUE))
-count(filter(NYC_transit_df,ada == "TRUE"))
+distinct_station_df =
+  NYC_transit_df%>% 
+  distinct(line, station_name, .keep_all = TRUE)
+
+
+ada_compliant_df = 
+  NYC_transit_df %>% 
+  filter(ada == "TRUE")
+
+distinct_ada_compliant_df = 
+  NYC_transit_df %>% 
+  filter(ada == "TRUE") %>% 
+  distinct(line, station_name, ada, .keep_all = TRUE) 
+
 count(filter(NYC_transit_df, entry == "TRUE", vending == "NO"))/count(filter(NYC_transit_df, vending == "NO"))
 ```
 
-* There are 465 distinct stations.
-* 468 stations are ADA compliant.
-* The proportion of station entrances / exits without vending allow entrance is 0.3770492 or 37.70492%.
+* There are `r count(distinct_station_df)` distinct stations.
+* `r count(ada_compliant_df)` stations are ADA compliant. Among these, `r count(distinct_ada_compliant_df)`  distinct stations are ADA compliant.
+* The proportion of station entrances / exits without vending allow entrance is `r count(filter(NYC_transit_df, entry == "TRUE", vending == "NO"))/count(filter(NYC_transit_df, vending == "NO"))`.
 
 Reformat the data.
 
@@ -122,19 +134,19 @@ Reformed_df =
     values_to = "route_number") %>% 
   drop_na(route_number) 
 
-Reformed_df%>% 
+serve_A_df=
+  Reformed_df%>% 
   filter(route_number == "A") %>% 
-  distinct(line, station_name) %>% 
-  count()
+  distinct(line, station_name) 
 
-Reformed_df%>% 
+serve_A_compliant_df = 
+  Reformed_df%>% 
   filter(route_number == "A") %>% 
   distinct(line, station_name, ada) %>%
-  filter(ada == "TRUE") %>% 
-  count()
+  filter(ada == "TRUE") 
 ```
 
-* After reformatting the data set, there are 60 distinct stations serve the A train. Of the stations that serve the A train, only 17 are ADA compliant.
+* After reformatting the data set, there are `r count(serve_A_df)` distinct stations serve the A train. Of the stations that serve the A train, only `r count(serve_A_compliant_df)` are ADA compliant.
 
 # Problem 3
 
